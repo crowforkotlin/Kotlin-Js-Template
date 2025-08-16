@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.zipline)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {
@@ -54,6 +55,9 @@ dependencies {
     implementation(libs.zipline.loader)
     implementation(libs.zipline)
     implementation(libs.zipline.profiler)
+    implementation(libs.kotlin.serialization.json)
+    implementation(libs.kotlin.serialization.core)
+    implementation(libs.kotlin.coroutine.core)
     implementation(project(":app"))
 
 }

@@ -6,22 +6,45 @@ plugins {
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.zipline)
     alias(libs.plugins.android.library)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 group = "com.mordecai"
 version = "1.0.0"
 
 kotlin {
+    applyDefaultHierarchyTemplate()
     androidTarget()
     js {
         browser()
         binaries.executable()
     }
-    dependencies {  }
     sourceSets {
-        commonMain {
+        val commonMain by getting {
             dependencies {
+                implementation(libs.kotlin.serialization.json)
+                implementation(libs.kotlin.serialization.core)
+                implementation(libs.kotlin.coroutine.core)
                 implementation(libs.zipline)
+            }
+        }
+        val hostMain by creating {
+            dependsOn(commonMain)
+            dependencies {
+                implementation(libs.kotlin.serialization.json)
+                implementation(libs.kotlin.serialization.core)
+                implementation(libs.kotlin.coroutine.core)
+                implementation(libs.zipline.loader)
+                api(libs.okio.core)
+            }
+        }
+        val androidMain by getting {
+            dependsOn(hostMain)
+            dependencies {
+                implementation(libs.kotlin.serialization.json)
+                implementation(libs.kotlin.serialization.core)
+                implementation(libs.kotlin.coroutine.core)
+                implementation(libs.okhttp)
             }
         }
     }
@@ -38,7 +61,7 @@ android {
 }
 
 zipline {
-    mainFunction.set("com.mordecai.zipline.launchZipline")
+    mainFunction.set("com.mordecai.zipline.main")
 }
 tasks.named<ZiplineServeTask>("serveDevelopmentZipline") {
     port
